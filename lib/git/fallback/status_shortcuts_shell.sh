@@ -15,7 +15,7 @@
 # # groups => 1: staged, 2: unmerged, 3: unstaged, 4: untracked
 # --------------------------------------------------------------------
 git_status_shortcuts() {
-  zsh_compat # Ensure shwordsplit is on for zsh
+  if [ $shell = "zsh" ] && [ -z $zsh_shwordsplit ]; then setopt shwordsplit; fi;
   IFS=$'\n'
   local git_status="$(git status --porcelain 2> /dev/null)"
   local i
@@ -115,7 +115,7 @@ git_status_shortcuts() {
     git status
   fi
   IFS=$' \t\n'
-  zsh_reset # Reset zsh environment to default
+  if [ $shell = "zsh" ] && [ -z $zsh_shwordsplit ]; then unsetopt shwordsplit; fi;
 }
 # Template function for 'git_status_shortcuts'.
 _gs_output_file_group() {

@@ -18,7 +18,7 @@
 # --------------------------------------------------------------------
 git_status_shortcuts() {
   fail_if_not_git_repo || return 1
-  zsh_compat # Ensure shwordsplit is on for zsh
+  if [ $shell = "zsh" ] && [ -z $zsh_shwordsplit ]; then setopt shwordsplit; fi;
   git_clear_vars
   # Run ruby script, store output
   local cmd_output="$(/usr/bin/env ruby "$scmbDir/lib/git/status_shortcuts.rb" $@)"
@@ -48,7 +48,7 @@ git_status_shortcuts() {
   if [ "${scmbDebug:-}" = "true" ]; then echo "------------------------"; fi
   # Print status
   echo "$cmd_output" | \grep -v '@@filelist@@::'
-  zsh_reset # Reset zsh environment to default
+  if [ $shell = "zsh" ] && [ -z $zsh_shwordsplit ]; then unsetopt shwordsplit; fi;
 }
 
 
