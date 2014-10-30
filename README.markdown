@@ -1,11 +1,8 @@
 # SCM Breeze [![TravisCI](https://secure.travis-ci.org/ndbroadbent/scm_breeze.png?branch=master)](http://travis-ci.org/ndbroadbent/scm_breeze)
 ### Streamline your SCM workflow.
 
-**SCM Breeze** is a set of shell scripts (for `bash` and `zsh`) that enhance your interaction with tools
-such as git. It integrates with your shell to give you numbered file shortcuts,
+**SCM Breeze** is a set of shell scripts (for `bash` and `zsh`) that enhance your interaction with git. It integrates with your shell to give you numbered file shortcuts,
 a repository index with tab completion, and many other useful features.
-
-Note: **git** is currently the only supported SCM. I've kept the project's name generic, but other SCMs aren't supported yet.
 
 <hr/>
 
@@ -29,7 +26,7 @@ You can configure the variable prefix, which is 'e' by default.
 </div>
 <br/>
 
-### UPDATE: Now with 'ls' shortcuts:
+### 'ls' shortcuts:
 
 <div class="centered">
 <img src="http://i.imgur.com/72GE1.png" alt="Ls With Shortcuts" />
@@ -89,6 +86,14 @@ $ ge echo 1-3
 # expands to echo $e1 $e2 $e3
 # => _shared.sh assets/git_breeze/config.example.sh assets/git_breeze/config.sh
 ```
+
+
+### Other shortcuts
+
+SCM Breeze adds a number of aliases to your shell. Use `list_aliases` to view all the aliases and their corresponding commands.
+You can filter aliases by adding a search string: `list_aliases git log`
+
+There's also a `git_aliases` command, which just shows aliases for `git` commands. You can also pass in additional filters, e.g. `git_aliases log`.
 
 
 ## Keyboard bindings
@@ -286,6 +291,12 @@ The install script just adds the following line to your `.bashrc` or `.zshrc`:
 
 `[ -s "$HOME/.scm_breeze/scm_breeze.sh" ] && source "$HOME/.scm_breeze/scm_breeze.sh"`
 
+
+# Updating
+
+Please run `update_scm_breeze` to fetch the latest code. This will update SCM Breeze from Github,
+and will create or patch your `~/.*.scmbrc` config files if any new settings are added.
+
 # Uninstall
 
 ```bash
@@ -337,13 +348,6 @@ You will need to set that up yourself.
 
 You just need to set the option: `setopt no_complete_aliases` (oh-my-zsh sets this by default).
 Zsh will then expand aliases like `gb` to `git branch`, and use the completion for that.
-
-
-# Updating
-
-Run `update_scm_breeze`. This will update SCM Breeze from Github,
-and will create or patch your `~/.*.scmbrc` files if any new settings are added.
-
 
 # Contributing
 
