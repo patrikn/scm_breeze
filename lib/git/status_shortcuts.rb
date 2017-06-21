@@ -22,14 +22,15 @@
 
 @project_root = File.exist?(".git") ? Dir.pwd : `\git rev-parse --show-toplevel 2> /dev/null`.strip
 
-@git_status = `\git status --porcelain 2> /dev/null`
+@git_status = `\git status --porcelain -b 2> /dev/null`
 
-git_branch = `\git branch -v 2> /dev/null`
-@branch = git_branch[/^\* (\(no branch\)|[^ ]*)/, 1]
-@ahead = git_branch[/^\* [^ ]* *[^ ]* *\[ahead ?(\d+).*\]/, 1]
-@behind = git_branch[/^\* [^ ]* *[^ ]* *\[.*behind ?(\d+)\]/, 1]
+git_status_lines = @git_status.split("\n")
+git_branch = git_status_lines[0]
+@branch = git_branch[/^## (?:Initial commit on )?([^ \.]+)/, 1]
+@ahead  = git_branch[/\[ahead ?(\d+).*\]/, 1]
+@behind = git_branch[/\[.*behind ?(\d+)\]/, 1]
 
-@changes = @git_status.split("\n")
+@changes = git_status_lines[1..-1]
 # Exit if too many changes
 exit if @changes.size > ENV["gs_max_changes"].to_i
 
@@ -127,7 +128,12 @@ end
   @stat_hash[group] << {:msg => msg, :col => col, :file => file} if msg
 
   # Work tree modification states
-  if y == "M"
+  if x == "R" && y == "M"
+    # Extract the second file name from the format x -> y
+    quoted, unquoted = /^(?:"(?:[^"\\]|\\.)*"|[^"].*) -> (?:"((?:[^"\\]|\\.)*)"|(.*[^"]))$/.match(file)[1..2]
+    renamed_file = quoted || unquoted
+    @stat_hash[:unstaged] << {:msg => "  modified", :col => :mod, :file => renamed_file}
+  elsif x != "R" && y == "M"
     @stat_hash[:unstaged] << {:msg => "  modified", :col => :mod, :file => file}
   elsif y == "D" && x != "D" && x != "U"
     # Don't show deleted 'y' during a merge conflict.
